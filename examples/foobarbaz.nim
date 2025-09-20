@@ -3,7 +3,7 @@ import std/tables
 import std/strformat
 
 import datamancer
-import ./nimgnuplot
+import nimgnuplot
 
 const
     COL_COLORS* = {

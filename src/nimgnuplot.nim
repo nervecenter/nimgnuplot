@@ -2,11 +2,10 @@
 nimgnuplot.nim
 by Chris Collazo
 Gnuplot interface for Nim, loosely based on pygnuplot.
-Originally made for and open sourced by GeoSonics, Inc.
+Originally made for and open sourced by GeoSonics Inc.
 
-pygnuplot documentation:
-    - https://pypi.org/project/py-gnuplot/
-    - http://www.gnuplot.info/documentation.html
+gnuplot:    http://www.gnuplot.info/documentation.html
+pygnuplot:  https://pypi.org/project/py-gnuplot
 ]#
 
 import std/os
@@ -34,7 +33,7 @@ type GnuplotScript* = object
     saveScript:     bool
     saveStdout:     bool
     echoStdout:     bool
-    
+
 
 const GNUPLOT_ENV_VAR = "GNUPLOT_EXE"
 
@@ -116,78 +115,6 @@ proc execute*(self: var GnuplotScript): string =
     finally:
         removeFile(tempScriptFile)
         removeFile(tempImageFile)
-
-
-# proc executeStdout*(self: var GnuplotScript): string =
-#     ## Execute the accumulated gnuplot script.
-#     ## Takes the generated image as output via stdout and
-#     ## returns the contents as a byte string.
-#     self.cmd "exit"
-
-#     let
-#         finalScript = self.script.join("\n")
-#         nowTime = now()
-#         nowClock = nowTime.format("h:mm:ss tt")
-#         nowTimestamp = nowTime.format("MM'-'dd'-'yyyy'_'HH'.'mm'.'ss'.'ffffff")
-#         script_filename = &"{nowTimestamp}.gnuplot"
-
-#     if self.printScript:
-#         echo &"[Start gnuplot script for {nowClock}]"
-#         echo finalScript
-#         echo &"[End gnuplot script for {nowClock}]"
-#     if self.saveScript:
-#         writeFile(script_filename, finalScript)
-
-#     let gnuplotCommand =
-#         if exists_env(GNUPLOT_ENV_VAR):
-#             get_env(GNUPLOT_ENV_VAR) & " -"
-#         else:
-#             when defined(Windows):  "./gnuplot/gnuplot.exe -"
-#             else:                   "./gnuplot/gnuplot -"
-
-#     let run_result =
-#         try:            exec_cmd_ex(gnuplotCommand, options = {}, input = finalScript)
-#         except IOError: quit("Couldn't communicate with gnuplot, is it installed?", -8436)
-
-#     # If we pass in flags to save the script or std output, get the 
-#     # datetime and use it as the filename for them
-#     if self.saveStdout: writeFile(&"{nowTimestamp}.out", run_result.output)
-#     if self.echoStdout: echo run_result.output
-
-#     return run_result.output
-
-    
-    # USING READ
-    
-
-    # let gnuplotCommand =
-    #     if exists_env(GNUPLOT_ENV_VAR):
-    #         get_env(GNUPLOT_ENV_VAR)
-    #     else:
-    #         when defined(Windows):  "./gnuplot/gnuplot.exe"
-    #         else:                   "./gnuplot/gnuplot"
-
-    # let
-    #     gnuplot_process = start_process(gnuplotCommand, args = ["-"])
-    #     gin = gnuplot_process.input_stream()
-    #     gout = gnuplot_process.output_stream()
-
-    # gin.write(finalScript)
-    # gin.flush()
-
-    # var output: string
-
-    # while not gout.at_end():
-    #     output.add gout.read_char()
-
-    # gnuplot_process.close()
-
-    # # If we pass in flags to save the script or std output, get the 
-    # # datetime and use it as the filename for them
-    # if self.saveStdout: writeFile(&"{nowTimestamp}.out", output)
-    # if self.echoStdout: echo output
-
-    # return output
 
 
 proc gdo*(
@@ -372,19 +299,3 @@ proc plotData*(
     let plot_command = plotCmd & " " & plotDescriptions.join(",\\\n")
     self.cmd plot_command.strip(leading = false, chars = {',', '\\', '\r', '\n'})
 
-
-when isMainModule:
-    var g = initGnuplotScript(printScript = true)
-    g.cmd "set terminal png"
-    g.cmd "set output \"test_plot.png\""
-    g.plot "sin(x)"
-    writeFile("sin_plot.png", g.execute())
-
-# when isMainModule:
-#     var g = initGnuplotScript(printScript = true)
-#     g.cmd """
-#         set terminal png"
-#         set output \"test_plot.png\"
-#         sin(x)
-#     """
-#     writeFile("sin_plot.png", g.execute())

@@ -5,4 +5,5 @@ license       = "TBD"
 
 srcDir = "src"
 
-requires "nim >= 1.16.0"
+requires "nim >= 2.0.0"
+requires "datamancer >= 0.4.6"
