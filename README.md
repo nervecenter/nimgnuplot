@@ -6,7 +6,7 @@ Gnuplot interface for Nim, loosely based on pygnuplot. Originally made for and o
 
 nimgnuplot uses a stateful object to accumulate commands, and then execute a script by using an `exec` call to a gnuplot program.
 
-### Documentation
+**WORK IN PROGRESS** and not yet ready for use.
 
 
 
