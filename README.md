@@ -19,19 +19,19 @@ import datamancer
 import nimgnuplot
 
 const
-    COL_COLORS* = {
+    COL_COLORS = {
         "foo": "red",
         "bar": "web-green",
         "baz": "blue",
     }.to_table
 
-    COL_NAMES* = {
+    COL_NAMES = {
         "foo": "Fooregard",
         "bar": "Barrington",
         "baz": "Bazarang",
     }.to_table
 
-    COL_POINT_TYPES* = {
+    COL_POINT_TYPES = {
         "foo": 7,
         "bar": 9,
         "baz": 5,
