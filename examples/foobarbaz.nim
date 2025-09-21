@@ -26,10 +26,9 @@ const
 
 var g = initGnuplotScript()
 
-g.cmd &"""
+g.cmd """
     set terminal svg size 850,500 dynamic background rgb 'white'
     set style fill solid 1.0
-    set print '-'
     set title 'Foo, Bar, \& Baz by Day' font ',20'
     set xlabel 'Day' center
     set ylabel 'Amount' center rotate by 90
@@ -40,12 +39,12 @@ g.cmd &"""
     set ytics nomirror
 """
 
-let colHeaders = g.addData(&"foobarbaz", readCsv("foobarbaz.csv"))
+let colHeaders = g.addData("foobarbaz", readCsv("foobarbaz.csv"))
 let plotElements = collect:
     for col in colHeaders[1 .. ^1]:
         &"u 'day':'{col}' w linespoints pt {COL_POINT_TYPES[col]} ps 0.5 lc rgb '{COL_COLORS[col]}' title '{COL_NAMES[col]}'"
 
 g.plotData("foobarbaz", plotElements)
-let svgBytes = g.execute()
 
+let svgBytes = g.execute()
 writeFile("foobarbaz.svg", svgBytes)
