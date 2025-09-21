@@ -4,6 +4,8 @@ by Chris Collazo
 Gnuplot interface for Nim, loosely based on pygnuplot.
 Originally made for and open sourced by GeoSonics Inc.
 
+MIT License
+
 gnuplot:    http://www.gnuplot.info/documentation.html
 pygnuplot:  https://pypi.org/project/py-gnuplot
 ]#

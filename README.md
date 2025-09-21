@@ -1,8 +1,8 @@
 # nimgnuplot
 
-Gnuplot interface for Nim, loosely based on pygnuplot. Originally made for and open sourced by GeoSonics Inc.
+Gnuplot interface for Nim, loosely based on pygnuplot. Uses a stateful object to accumulate commands and data, and then execute a script by using an `exec` call to a gnuplot program. It is not built for interactive plots, and assumes submitting a script to `gnuplot` and receiving bytes as output. It depends on Datamancer, and features utilities for plotting `DataFrame` objects.
 
-nimgnuplot uses a stateful object to accumulate commands, and then execute a script by using an `exec` call to a gnuplot program. It is not built for interactive plots, and assumes submitting a script to `gnuplot` and receiving bytes as output. It depends on Datamancer, and features utilities for plotting `DataFrame` objects.
+The environment variable `GNUPLOT_EXE` can be used to point to any `gnuplot` binary.
 
 ### Example
 
