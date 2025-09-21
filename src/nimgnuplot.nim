@@ -39,6 +39,7 @@ type GnuplotScript* = object
 
 const GNUPLOT_ENV_VAR = "GNUPLOT_EXE"
 
+
 proc escape_enhanced*(input: string): string =
     ## For enhanced mode text, escape all enhancement control characters
     input.multi_replace(
@@ -48,6 +49,7 @@ proc escape_enhanced*(input: string): string =
         ("&", "\\&"),
         ("~", "\\~"),
     )
+
 
 proc initGnuplotScript*(
     script: seq[string] = @["set encoding utf8"],
@@ -154,6 +156,7 @@ proc toCsvString*(
         result &= valStrings.join($separator) & "\n"
     
     result = result.strip()
+
 
 proc toCsvString*(
     dataframe: DataFrame,
@@ -287,6 +290,7 @@ proc plotData*(
 ) =
     ## Generate a plot with one element from one data label.
     self.plotData(dataLabel, @[plotElement], plotCmd = plotCmd)
+
 
 proc plotData*(
     self: var GnuplotScript,
