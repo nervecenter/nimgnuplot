@@ -4,6 +4,8 @@ Gnuplot interface for Nim, loosely based on pygnuplot. Uses a stateful object to
 
 The environment variable `GNUPLOT_EXE` can be used to point to any `gnuplot` binary.
 
+**Documentation:** https://nervecenter.github.io/nimgnuplot
+
 ### Example
 
 This can be found at `examples/foobarbaz.nim`. 
