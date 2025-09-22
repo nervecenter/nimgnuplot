@@ -14,7 +14,7 @@ import std/strutils
 import std/algorithm
 
 import datamancer
-import ../src/nimgnuplot
+import nimgnuplot
 
 const
     COL_COLORS = {
