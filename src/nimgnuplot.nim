@@ -40,7 +40,7 @@ type GnuplotScript* = object
 const GNUPLOT_ENV_VAR = "GNUPLOT_EXE"
 
 
-proc escape_enhanced*(input: string): string =
+proc escapeEnhanced*(input: string): string =
     ## For enhanced mode text, escape all enhancement control characters
     input.multi_replace(
         ("^", "\\^"),
@@ -251,6 +251,23 @@ proc addData*(
     ## Add a single dataframe to the gnuplot script.
     ## Returns the column headers in order.
     self.addData(dataLabel, @[dataframe], separator = separator)
+
+
+proc addData*[T](
+    self: var GnuplotScript,
+    dataLabel: string,
+    data: T,
+    separator: char = ','
+): seq[string] =
+    ## Generic addData[T](). To work, simply define toCsvString()
+    ## for your arbitrary tabular data type.
+    let dataCsv = data.toCsvString()
+    self.cmd &"set datafile separator \"{separator}\""
+    self.cmd &"${dataLabel} << EOD\n{dataCsv}\nEOD"
+
+    var dataCsvStream = newStringStream(dataCsv)
+    defer: dataCsvStream.close()
+    return dataCsvStream.readLine().split(",")
 
 
 proc addDataIndexed*(
