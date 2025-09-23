@@ -1,5 +1,4 @@
-
-import ../nimgnuplot
+import nimgnuplot
 
 var g = initGnuplotScript(printScript = true)
 g.cmd "set terminal png"
