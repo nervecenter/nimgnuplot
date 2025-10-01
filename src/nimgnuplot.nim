@@ -253,6 +253,22 @@ proc addData*(
     self.addData(dataLabel, @[dataframe], separator = separator)
 
 
+proc addData*(
+    self: var GnuplotScript,
+    dataLabel: string,
+    dataCsv: string,
+    separator: char = ','
+): seq[string] =
+    ## Add data in the form of a CSV string. Provide the correct separator
+    ## to properly inform gnuplot of the data's format.
+    self.cmd &"set datafile separator \"{separator}\""
+    self.cmd &"${dataLabel} << EOD\n{dataCsv}\nEOD"
+
+    var dataCsvStream = newStringStream(dataCsv)
+    defer: dataCsvStream.close()
+    return dataCsvStream.readLine().split(",")
+
+
 proc addData*[T](
     self: var GnuplotScript,
     dataLabel: string,
