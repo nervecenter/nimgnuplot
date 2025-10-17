@@ -205,7 +205,7 @@ proc plot*(
     plotElements: seq[string],
     plotCmd: string = "plot"
 ) =
-    ## Add a plot command to the script with multiple plot elements.
+    ## Add a `plot` command to the script with multiple plot elements.
     let plotDescriptions = collect(newSeq):
         for element in plotElements:
             &"{element},\\"
@@ -220,7 +220,7 @@ proc plot*(
     plotElement: string,
     plotCmd: string = "plot"
 ) =
-    ## Add a plot command to the script with a single plot element.
+    ## Add a `plot` command to the script with a single plot element.
     self.plot(@[plotElement], plotCmd = plotCmd)
 
 
