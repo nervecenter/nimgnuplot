@@ -1,5 +1,7 @@
 # nimgnuplot
 
+`nimble install nimgnuplot`
+
 Gnuplot interface for Nim, loosely based on pygnuplot. Uses a stateful object to accumulate commands and data, and then execute a script by using an `exec` call to a gnuplot program. It is not built for interactive mode or interactive plots, and instead assumes you'll submit a script to `gnuplot`, then receive bytes as output.
 
 It depends on Datamancer, and features utilities for plotting `DataFrame` objects. However, there is also a generic `addData[T]()` proc for arbitrary data types; to use this, simply define `toCsvString()` on your data type. An example can be found in `examples/iris.nim`.
