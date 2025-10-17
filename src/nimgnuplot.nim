@@ -27,9 +27,9 @@ randomize()
 
 
 type GnuplotScript* = object
-    ## GnuplotScript is a stateful object.
-    ## Data, command, and plot procs are called to accumulate a script.
-    ## Execute proc sends the script to gnuplot via exec.
+    ## A stateful object; `addData`, `cmd`, and `plot` procs are called to
+    ## accumulate a script inside of it. The `execute` proc sends the script
+    ## to gnuplot via an `exec` syscall.
     script:         seq[string]
     printScript:    bool 
     saveScript:     bool
@@ -57,7 +57,7 @@ proc initGnuplotScript*(
     saveScript: bool = false
 ): GnuplotScript =
     ## Initialize a stateful gnuplot object which can take commands
-    ## and eventually execute the gnuplot exe to generate a plot file.
+    ## and eventually execute gnuplot to generate a plot file.
     GnuplotScript(
         script: script,
         printScript: printScript,
@@ -72,9 +72,9 @@ proc cmd*(self: var GnuplotScript, commands: string): void =
 
 
 proc execute*(self: var GnuplotScript): string =
-    ## Execute the accumulated gnuplot script.
-    ## Saves the generated image plot to a temp file, and returns
-    ## the temp file's contents as a byte string.
+    ## Execute the accumulated gnuplot script. Saves the script to a temp
+    ## file, invokes gnuplot, saves the generated image bytes to a temp file,
+    ## and returns the temp file's contents as a byte string.
     self.cmd "exit"
 
     let
@@ -126,7 +126,7 @@ proc gdo*(
     iteration: string,
     commands: seq[string]
 ) =
-    ## Add a gnuplot iteration block with arbitrary commands.
+    ## Add a gnuplot iteration block to the script with arbitrary commands.
     self.cmd("do " & iteration & " {")
     for c in commands:
         self.cmd(c)
@@ -205,7 +205,7 @@ proc plot*(
     plotElements: seq[string],
     plotCmd: string = "plot"
 ) =
-    ## Plot multiple elements.
+    ## Add a plot command to the script with multiple plot elements.
     let plotDescriptions = collect(newSeq):
         for element in plotElements:
             &"{element},\\"
@@ -220,7 +220,7 @@ proc plot*(
     plotElement: string,
     plotCmd: string = "plot"
 ) =
-    ## Plot a single element.
+    ## Add a plot command to the script with a single plot element.
     self.plot(@[plotElement], plotCmd = plotCmd)
 
 
@@ -231,7 +231,7 @@ proc addData*(
     separator: char = ','
 ): seq[string] =
     ## Laterally concatenate dataframes of different lengths
-    ## into a single CSV and add to the gnuplot script.
+    ## into a single CSV and add it to the gnuplot script with a label.
     ## Returns the column headers in order.
     let dataCsv = dataframes.toCsvString()
     self.cmd &"set datafile separator \"{separator}\""
@@ -248,7 +248,7 @@ proc addData*(
     dataframe: DataFrame,
     separator: char = ','
 ): seq[string] =
-    ## Add a single dataframe to the gnuplot script.
+    ## Add a single dataframe to the gnuplot script with a label.
     ## Returns the column headers in order.
     self.addData(dataLabel, @[dataframe], separator = separator)
 
@@ -259,8 +259,8 @@ proc addData*(
     dataCsv: string,
     separator: char = ','
 ): seq[string] =
-    ## Add data in the form of a CSV string. Provide the correct separator
-    ## to properly inform gnuplot of the data's format.
+    ## Add data in the form of a CSV string to the gnuplot script with a label.
+    ## Provide the correct separator to properly inform gnuplot of the data's format.
     self.cmd &"set datafile separator \"{separator}\""
     self.cmd &"${dataLabel} << EOD\n{dataCsv}\nEOD"
 
@@ -275,7 +275,7 @@ proc addData*[T](
     data: T,
     separator: char = ','
 ): seq[string] =
-    ## Generic addData[T](). To work, simply define toCsvString()
+    ## Generic form of `addData()`. To work, simply define `toCsvString()`
     ## for your arbitrary tabular data type.
     let dataCsv = data.toCsvString()
     self.cmd &"set datafile separator \"{separator}\""
@@ -292,9 +292,9 @@ proc addDataIndexed*(
     dataframes: seq[DataFrame],
     separator: char = ','
 ): seq[seq[string]] =
-    ## Add multiple dataframes to the gnuplot script, with the same label
-    ## but appended with an index.
-    ## Returns each dataframe's column headers in order, each in a seq.
+    ## Add multiple dataframes to the gnuplot script, all with the same label
+    ## prefix but appended with an index number.
+    ## Returns each dataframe's column headers in order, each in a `seq`.
     return collect(newSeq):
         for i, df in dataframes:
             self.addData(&"{dataLabelPrefix}_{i}", df, separator = separator)
@@ -306,7 +306,7 @@ proc plotData*(
     plotElements: seq[string],
     plotCmd: string = "plot"
 ) =
-    ## Generate a plot with multiple elements from one data label.
+    ## Add a `plot` command to the script with with multiple elements from one data label.
     let plotDescriptions = collect(newSeq):
         for element in plotElements:
             &"${dataLabel} {element}"
@@ -321,7 +321,7 @@ proc plotData*(
     plotElement: string,
     plotCmd: string = "plot"
 ) =
-    ## Generate a plot with one element from one data label.
+    ## Add a `plot` command to the script with one element from one data label.
     self.plotData(dataLabel, @[plotElement], plotCmd = plotCmd)
 
 
@@ -330,7 +330,7 @@ proc plotData*(
     dataLabelsElements: seq[(string, string)],
     plotCmd: string = "plot"
 ) =
-    ## Generate a plot with multiple elements, each from its own data label.
+    ## Add a `plot` command to the script with multiple elements, each from its own data label.
     let plotDescriptions = collect(newSeq):
         for (dataLabel, element) in dataLabelsElements:
             &"${dataLabel} {element}"
